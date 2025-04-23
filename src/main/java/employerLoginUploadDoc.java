@@ -35,7 +35,6 @@ public class employerLoginUploadDoc {
             uploadDocumentsCard.click();
             System.out.println("✅ Clicked 'Upload Documents' card.");
 
-            addCategory("project");
             String relativePath = "src/main/resources/projectoutline.pdf";
             String absolutePath = new File(relativePath).getAbsolutePath();
             uploadDocument("Project Outline", "project", absolutePath);
@@ -53,47 +52,6 @@ public class employerLoginUploadDoc {
         }
     }
 
-    public static void approveEmployee(String name) throws InterruptedException {
-        System.out.println("🔍 Looking for employee: " + name);
-        WebElement employeeRow = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//table[contains(@class, 'employeeTable')]//tr[td[text()='" + name + "']]")));
-
-        WebElement approveButton = employeeRow.findElement(By.cssSelector("button.EmployeeManagement_approveButton__30Gqu"));
-        approveButton.click();
-        System.out.println("✅ Approved employee: " + name);
-        Thread.sleep(1000);
-    }
-
-    public static void addCategory(String categoryName) throws InterruptedException {
-        System.out.println("➕ Adding new category: " + categoryName);
-        String expectedUrl = "https://www.pdrai.online/employer/upload";
-        // Locate the input field and type the category name
-        WebElement inputField = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("form.Upload_addCategoryForm__iiidY input[placeholder='New category name']")));
-        inputField.clear();
-        inputField.sendKeys(categoryName);
-
-        // Click the "Add Category" button
-        WebElement addButton = driver.findElement(
-                By.cssSelector("form.Upload_addCategoryForm__iiidY button[type='submit']"));
-        addButton.click();
-
-        // Optional: Wait for the category to appear in the list
-        wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//ul[contains(@class,'categoryList')]//li[span[text()='" + categoryName + "']]")));
-
-        System.out.println("✅ Successfully added category: " + categoryName);
-
-        // Verify URL is still /upload
-        Thread.sleep(1000);
-        String currentUrl = driver.getCurrentUrl();
-        if (currentUrl.equals(expectedUrl)) {
-            System.out.println("✅ Still on upload page after adding category.");
-        } else {
-            System.out.println("❌ URL changed unexpectedly! Current URL: " + currentUrl);
-        }
-
-    }
     public static void uploadDocument(String title, String category, String filePath) {
         System.out.println("📤 Starting document upload...");
 
