@@ -90,22 +90,23 @@ public class employerLoginManageEmployer {
             Thread.sleep(1000);
 
             System.out.println("🗑️ Removing employee: " + employeeName);
+            // Locate the row in the "All Employees" section that contains the name
+            WebElement employeeRow2 = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//section[contains(@class, 'employeeSection')]//table//tr[td[text()='" + employeeName + "']]")));
 
-            // Locate the row that contains the employee name
-//            WebElement employeeRow2 = wait.until(ExpectedConditions.visibilityOfElementLocated(
-//                    By.xpath("//table[contains(@class, 'employeeTable')]//tr[td[text()='" + employeeName + "']]")));
-
-            // Find the "Remove" button within that row and click it
-            WebElement removeButton = employeeRow.findElement(By.cssSelector("button.EmployeeManagement_removeButton__No_Bb"));
+            // Within that row, find and click the "Remove" button by class
+            WebElement removeButton = employeeRow2.findElement(By.cssSelector("button.EmployeeManagement_removeButton__No_Bb"));
             removeButton.click();
-            System.out.println("✅ Removed employee: " + employeeName);
+            System.out.println("✅ Successfully removed: " + employeeName);
 
             // Confirm removal if needed
             Thread.sleep(500);
-            WebElement confirmRemove = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.xpath("//button[contains(text(),'Confirm')]")));
-            confirmRemove.click();
-            System.out.println("🎉 Employee approved and removed successfully.");
+            System.out.println("🕒 Waiting for employee row to be removed...");
+
+            // Wait until the row is no longer visible in the DOM
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                    By.xpath("//section[contains(@class, 'employeeSection')]//table//tr[td[text()='" + employeeName + "']]")));
+            System.out.println("✅ Successfully removed: " + employeeName);
 
         } catch (Exception e) {
             System.out.println("❌ Login failed.");
