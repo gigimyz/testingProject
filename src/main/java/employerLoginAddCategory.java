@@ -37,6 +37,8 @@ public class employerLoginAddCategory {
             System.out.println("✅ Clicked 'Upload Documents' card.");
 
             addCategory("project");
+            addCategory("project"); // try adding duplicate
+            checkDuplicateCategoryAdd("project");
 
         } catch (Exception e) {
             System.out.println("❌ Error during test execution.");
@@ -78,7 +80,18 @@ public class employerLoginAddCategory {
         } else {
             System.out.println("❌ URL changed unexpectedly! Current URL: " + currentUrl);
         }
-
     }
+
+    public static void checkDuplicateCategoryAdd(String categoryName) throws InterruptedException {
+        List<WebElement> duplicates = driver.findElements(
+                By.xpath("//ul[contains(@class,'categoryList')]//li[span[text()='" + categoryName + "']]"));
+
+        if (duplicates.size() > 1) {
+            System.out.println("❌ Duplicate category allowed (" + duplicates.size() + " times) — should be blocked!");
+        } else {
+            System.out.println("✅ Duplicate category was correctly prevented.");
+        }
+    }
+
 
 }
