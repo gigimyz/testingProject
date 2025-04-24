@@ -1,63 +1,39 @@
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
+import java.io.File;
 import java.time.Duration;
 import java.util.List;
 
-public class employeeDocument {
+public class employerDocument {
+    static String baseUrl = "https://www.pdrai.online/";
+    static String employeeEmail = "mayz.gigi2016@outlook.com";
+    static String employeePassword = "SoftwareTesting2025";
+    static WebDriver driver;
+    static WebDriverWait wait;
+
     public static void main(String[] args) {
         // Set up ChromeDriver
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        driver = new ChromeDriver();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         driver.manage().window().maximize();
 
-        String employeeEmail = "yma115@jh.edu";
-        String employeePassword = "SoftwareTesting2025";
-
         try {
-            System.out.println("Navigating to https://www.pdrai.online/ ...");
-            driver.get("https://www.pdrai.online/");
-
-            System.out.println("Clicking 'Get Started' button...");
-            WebElement getStarted = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.xpath("//button[text()='Get Started']")));
-            getStarted.click();
-            Thread.sleep(2000);
-
-            System.out.println("Waiting for Sign In form...");
-            WebElement signInLink = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.linkText("Sign in")));
-            signInLink.click();
-            Thread.sleep(1000);
-
-            System.out.println("📧 Entering email/username...");
-            WebElement emailInput = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.cssSelector("input[type='email'], input[type='text']")));
-            emailInput.sendKeys(employeeEmail);
-            Thread.sleep(1000);
-
-            System.out.println("➡️ Clicking visible 'Continue'...");
-            WebElement continueBtn = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.xpath("//button[.//span[text()='Continue'] and not(@aria-hidden)]")));
-            continueBtn.click();
-            Thread.sleep(1000);
-
-            System.out.println("🔐 Waiting for password field...");
-            WebElement passwordInput = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.cssSelector("input[type='password']")));
-            passwordInput.sendKeys(employeePassword);
-            Thread.sleep(1000);
-
-            System.out.println("➡️ Clicking second 'Continue'...");
-            WebElement continueBtn2 = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.xpath("//button[.//span[text()='Continue'] and not(@aria-hidden)]")));
-            continueBtn2.click();
-            Thread.sleep(1000);
+            //login first
+            utils utils = new utils();
+            utils.loginTest(baseUrl, employeeEmail, employeePassword, (ChromeDriver) driver, wait);
 
 
-            //employee homepage
+            System.out.println("📄 Navigating to 'View Documents'...");
+            WebElement uploadDocumentsCard = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("//h2[text()='View Documents']/ancestor::div[@role='button']")));
+            uploadDocumentsCard.click();
+            System.out.println("✅ Clicked 'View Documents' card.");
+
             // search
             System.out.println("🔍 Testing Search Bar...");
             WebElement searchInput = wait.until(ExpectedConditions.visibilityOfElementLocated(
@@ -160,15 +136,16 @@ public class employeeDocument {
 
 
 
-        } catch (Exception e) {
-            System.out.println("❌ Login failed.e");
+
+        }
+        catch (Exception e) {
+            System.out.println("❌ Error during test execution.");
             e.printStackTrace();
         } finally {
             System.out.println("Closing browser...");
             try {
-                Thread.sleep(5000); // Give you a moment to see result
-            } catch (InterruptedException ignored) {
-            }
+                Thread.sleep(5000);
+            } catch (InterruptedException ignored) {}
             driver.quit();
         }
     }
